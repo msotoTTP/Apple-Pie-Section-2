@@ -26,15 +26,38 @@ class ViewController: UIViewController {
     }
     
     func newRound() {
-        let newWord = listOfWords.removeFirst()
-        currentGame = Game(word: newWord, incorrectMovesRemaining: incorrectMovesAllowed, guessedLetters: [])
+        if !listOfWords.isEmpty {
+            let newWord = listOfWords.removeFirst()
+            currentGame = Game(word: newWord, incorrectMovesRemaining: incorrectMovesAllowed, guessedLetters: [])
+            enableLetterButtons(true)
+        } else {
+            enableLetterButtons(false)
+        }
         updateUI()
+    }
+    
+    func enableLetterButtons(_ enable: Bool) {
+        for button in letterButtons {
+            button.isEnabled = enable
+        }
     }
     
     func updateUI() {
         correctWordLabel.text = currentGame.formattedWord
         scoreLabel.text = "Wins: \(totalWins), Losses: \(totalLosses)"
         treeImageView.image = UIImage(named: "Tree \(currentGame.incorrectMovesRemaining)")
+    }
+    
+    func updateGameState() {
+        if currentGame.incorrectMovesRemaining == 0 {
+            totalLosses += 1
+            newRound()
+        } else if !currentGame.formattedWord.contains("_") {
+            totalWins += 1
+            newRound()
+        }
+        
+        updateUI()
     }
 
     @IBAction func letterButtonPressed(_ sender: UIButton) {
@@ -43,7 +66,7 @@ class ViewController: UIViewController {
         let letter = Character(letterString.lowercased())
         
         currentGame.playerGuessed(letter: letter)
-        updateUI()
+        updateGameState()
     }
     
 }
