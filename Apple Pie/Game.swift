@@ -10,8 +10,19 @@ import Foundation
 struct Game {
     var word: String
     var incorrectMovesRemaining: Int
-    //a list of all of the letters the user has guessed so far
     var guessedLetters: [Character]
+    var formattedWord: String {
+        var guessedWord = ""
+        for letter in word {
+            if guessedLetters.contains(letter) {
+                guessedWord.append(letter)
+            } else {
+                guessedWord.append("_")
+            }
+            guessedWord.append(" ")
+        }
+        return guessedWord
+    }
     
     mutating func playerGuessed(letter: Character) {
         guessedLetters.append(letter)
